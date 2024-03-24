@@ -3,6 +3,7 @@ def completar_cuadrado(cuadrado, f, c):
     numero_magico = n * (n**2 + 1) // 2
     if(es_valido(cuadrado)):
         imprimir_cuadrado(cuadrado)
+        print("Separador")
         return True
     if f == n:
         return False
@@ -16,8 +17,7 @@ def completar_cuadrado(cuadrado, f, c):
         if opciones_disponibles[i] == True:
             if (sumar_columna(cuadrado, c) + i <= numero_magico and sumar_fila(cuadrado, f) + i <= numero_magico):
                 cuadrado[f][c] = i + 1
-                if completar_cuadrado(cuadrado, proxima_fila, proxima_columna):
-                    return True
+                completar_cuadrado(cuadrado, proxima_fila, proxima_columna)
                 cuadrado[f][c] = 0
     return False
     
@@ -81,9 +81,10 @@ def imprimir_cuadrado(cuadrado):
         print("\n" + "-"*(4*len(fila) + 1))
 
 cuadrado = [
-    [0,0,0],
-    [0,0,0],
-    [0,0,0]
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0]
 ]
 
 completar_cuadrado(cuadrado, 0, 0)
