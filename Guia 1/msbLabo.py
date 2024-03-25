@@ -1,8 +1,17 @@
 def calcular_maxi_subconjunto(matriz, k, f, c, conjunto):
-    if(f == len(matriz) and c == len(matriz)):
+    if(c == len(matriz)):
         return conjunto
-    if(k == 0):
+    if(len(conjunto) == k):
         return conjunto
+    # Calculo cuantos elementos faltan por recorrer
+    elementos_restantes_fila_actual = len(matriz) - (c + 1)
+    filas_restantes = len(matriz) - (f + 1)
+    elementos_filas_restantes = filas_restantes * len(matriz)
+    total_elementos_restantes = elementos_restantes_fila_actual + elementos_filas_restantes
+    # Asi elimino un par de opciones de conjuntos de menos de k elementos
+    if(k > total_elementos_restantes + len(conjunto)):
+        return []
+    
     proxima_fila = f + 1
     proxima_columna = c
     if(proxima_fila == len(matriz)):
@@ -10,7 +19,7 @@ def calcular_maxi_subconjunto(matriz, k, f, c, conjunto):
         proxima_columna = c + 1
     agrego = conjunto[:]
     agrego.append(f)
-    conjunto_agrego = calcular_maxi_subconjunto(matriz, k - 1, proxima_fila, proxima_columna, agrego)
+    conjunto_agrego = calcular_maxi_subconjunto(matriz, k, proxima_fila, proxima_columna, agrego)
     conjunto_no_agrego = calcular_maxi_subconjunto(matriz, k, proxima_fila, proxima_columna, conjunto)
     if(sumar_posiciones(matriz, conjunto_agrego) > sumar_posiciones(matriz, conjunto_no_agrego)):
         return conjunto_agrego
