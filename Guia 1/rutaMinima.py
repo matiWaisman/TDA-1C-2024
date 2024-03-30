@@ -3,14 +3,12 @@
 min_actual = 10000
 llamadas_recu = 0
 # Con poda en caso base
-"""""
+
 def calcular_ruta_minima(matriz, funcion, i):
     global min_actual
     global llamadas_recu
     if(i == len(funcion)):
         return funcion
-    if(cantidad_vacios(funcion) + i > len(matriz)):
-        return []
     # Poda caso base
     suma_parcial_actual = calcular_suma_parcial(matriz, funcion)
     if(suma_parcial_actual > min_actual):
@@ -52,7 +50,7 @@ def calcular_ruta_minima(matriz, funcion, i):
                     funcion_min = funcion_agrego
                     min_actual = calcular_suma(matriz, funcion_agrego)
     return funcion_min           
-    
+"""
 
 def calcular_suma(matriz, funcion):
     if(len(funcion) == 0 or cantidad_vacios(funcion) > 0):
@@ -102,5 +100,3 @@ funcion = [-1,-1,-1,-1]
 
 ruta_minima = calcular_ruta_minima(matriz, funcion, 0)
 print(ruta_minima)
-print(llamadas_recu)
-print(calcular_suma(matriz, ruta_minima))
