@@ -18,16 +18,16 @@ bool hayCorte(int i, int j, vector<bool> cortes){
 }
 
 int cortarArbol(int i, int j, vector<bool> cortes){
-    if(hayCorte(i, j, cortes) == false){
-        return 0;
-    }
     int valorTotal = 0;
+    if(hayCorte(i, j, cortes) == false){
+        return valorTotal;
+    }
     for(int c = i + 1; c < j; c++){
         if(cortes[c] == true){
             int sizeVara = (i == 0) ? j : j - i - 1;
             int corteDerecho = cortarArbol(i, c, cortes);
             int corteIzquierdo = cortarArbol(c, cortes.size(), cortes);
-            int valorTotal = min(sizeVara, corteDerecho + corteIzquierdo);
+            int valorTotal = sizeVara + corteDerecho + corteIzquierdo;
             if(i == 0 && j == cortes.size()){
                 if(valorTotal < minActual){
                     minActual = valorTotal;
@@ -52,6 +52,6 @@ int main(){
     int largo = 10;
     vector<int> cortes = {2,4,7};
     vector<bool> boolCortes = generarBoolCortes(cortes, largo);
-    int minimo = cortarArbol(0, 10, boolCortes);
+    int minimo = cortarArbol(0, largo, boolCortes);
     return minimo;
 }

@@ -25,8 +25,8 @@ void rellenarMatriz(){
 
 int main(){
     catalogo = {3,2,5,6};
-    // Puedo tener de 0 a n asteroides
-    // Tengo de 0 a n - 1 dias
+    // Puedo tener de 0 a n/2 asteroides
+    // Tengo de 0 a n dias
     matriz = vector<vector<int>>(catalogo.size() - 1, vector<int>(catalogo.size(), 0));
     rellenarMatriz();
     return 0;
