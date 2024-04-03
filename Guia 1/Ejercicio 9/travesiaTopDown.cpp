@@ -35,6 +35,22 @@ int tv(int i, int j, int vida) {
     return mem[i][j];
 }
 
+// Version 2 con lo visto en clase pero no devuelve el resultado esperado
+/*
+int tv(int i, int j){
+    if(i == mem.size() - 1 && j == mem[0].size() - 1){
+        mem[i][j] = 1;
+    }
+    if(i == tablero.size() || j == tablero[0].size()){
+        return -1000;
+    }
+    else if(mem[i][j] == -1){
+        mem[i][j] = max(1, - tablero[i][j] + min(tv(i, j + 1), tv(i+1, j)));
+    }
+    return mem[i][j];
+}
+*/
+
 
 int main() {
     tablero = {
