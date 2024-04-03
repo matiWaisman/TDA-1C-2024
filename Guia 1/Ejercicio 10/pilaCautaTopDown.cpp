@@ -7,30 +7,38 @@ vector<pair<int, int>> lista;
 vector<vector<int>> mem; 
 
 // Complejidad temporal O(N^2). Complejidad espacial O(N^2)
-int pc(int i, int ultimaPos){
+int pc(int i, int ultimaPos, int soporteActual){
     if(i == lista.size()){
-        return 1;
+        return 0;
+    }
+    if(soporteActual < 0){
+        return -10000;
     }
     if(mem[i][ultimaPos] == -10000){
-         if(lista[i].first < lista[ultimaPos].first && lista[i].first < lista[ultimaPos].second){
-            int agrego = 1 + pc(i + 1, i);
-            int noAgrego = pc(i + 1, ultimaPos);
-            mem[i][ultimaPos] = max(agrego, noAgrego);
+        if(lista[i].first <= lista[ultimaPos].first){
+            int minSoporte = soporteActual - lista[i].first;
+            if(minSoporte > lista[i].second){
+                minSoporte = lista[i].second;
+            }
+            int agrego = 1 + pc(i + 1, i, minSoporte);
+            int noAgrego = pc(i + 1, ultimaPos, soporteActual);
+            mem[i][ultimaPos] =  max(agrego, noAgrego);
         }
         else{
-            mem[i][ultimaPos] = pc(i + 1, ultimaPos);
+            mem[i][ultimaPos] = pc(i + 1, ultimaPos, soporteActual);
         }
     }
     return mem[i][ultimaPos];
+    
 }
 
 int main(){
-    vector<int> pesos = {20, 15, 10, 5, 18, 12, 7, 4, 14, 6};
-    vector<int> soportes = {18, 16, 14, 12, 10, 8, 6, 4, 2, 20};
+    vector<int> pesos = {19, 7, 5, 6, 1};
+    vector<int> soportes = {15, 13, 7, 8, 2};
     for (int j = 0; j < pesos.size(); j++) {
             lista.push_back(make_pair(pesos[j], soportes[j]));
     }
     mem = vector<vector<int>>(lista.size(),vector<int>(lista.size(), -10000));
-    int res = pc(1, 0);
+    int res = pc(0, 0, 10000);
     return res;
 }
