@@ -36,8 +36,8 @@ int av(int c, int j){
 
 
 int main(){
-    catalogo = {3,2,5,6};
-    matriz = vector<vector<int>>(catalogo.size(), vector<int>(catalogo.size() + 1, -10000));
+    catalogo = {3, 6, 10};
+    matriz = vector<vector<int>>(catalogo.size(), vector<int>(catalogo.size(), -10000));
     int res = av(0,0);
     return res;
 }
