@@ -3,8 +3,8 @@
 
 using namespace std;
 
-vector<bool> disponibles;
 vector<vector<int>> mem;
+int k;
 
 int fBt(int n, int s) {
     if (n == 0 && s == 0) {
@@ -17,13 +17,8 @@ int fBt(int n, int s) {
         return 0; 
     }
     int res = 0;
-    for (int i = 0; i < disponibles.size(); i++) {
-        if (disponibles[i]) {
-            vector<bool> listaVieja = disponibles;
-            disponibles[i] = false;
-            res += fBt(n - 1, s - (i + 1));
-            disponibles = listaVieja;
-        }
+    for (int i = 1; i <= k; i++) {
+        res += fBt(n - 1, s - i);
     }
     return res;
 }
@@ -40,13 +35,8 @@ int fTd(int n, int s){
     }
     if(mem[n][s] == -1) {
         int total = 0;
-        for (int i = 0; i < disponibles.size(); i++) {
-            if (disponibles[i]) {
-                vector<bool> listaVieja = disponibles;
-                disponibles[i] = false;
-                total += fTd(n - 1, s - (i + 1));
-                disponibles = listaVieja;
-            }
+        for (int i = 1; i <= k; i++) {
+            total += fTd(n - 1, s - i);
         }
         mem[n][s] = total;
     }
@@ -54,10 +44,9 @@ int fTd(int n, int s){
 }
 
 int main(){
-    int k = 4;
+    k = 4;
     int n = 3;
     int s = 6;
-    disponibles.resize(k, true);
     mem.resize(n + 1, vector<int>(s + 1, -1));
     int res = fTd(n, s);
     return -1;

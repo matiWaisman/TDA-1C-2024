@@ -25,29 +25,27 @@ int calcularOperacion(int num1, int num2, string operacion) {
 
 
 // Complejidad temporal O(Operaciones^N). Complejidad espacial O(Numeros+Operaciones)
-void operar(int i, int ultimoNumero, string secuencia){
+int operar(int i, int ultimoNumero){
     if(ultimoNumero > w){
-        return;
+        return 0;
     }
     if(i == numeros.size()){
          if(ultimoNumero == w){
-            cout << "Hay un resultado" << endl;
-            resultados.push_back(secuencia);
+            return 1;
         }
-        return;
+        return 0;
     }
+    int res = 0;
     for(int o = 0; o < operaciones.size(); o++){
-        string str = secuencia;
-        str.push_back(operaciones[o][0]);
-        str += to_string(numeros[i]);
-        operar(i + 1, calcularOperacion(ultimoNumero, numeros[i], operaciones[o]), str);
+        res += operar(i + 1, calcularOperacion(ultimoNumero, numeros[i], operaciones[o]));
     }
+    return res;
 }
 
 int main(){
     numeros = {3,1,5,2,1};
     operaciones = {"+","*","^"};
     w = 400;
-    operar(1, numeros[0], to_string(numeros[0]));
+    int res = operar(0, 0);
     return 0;
 }
