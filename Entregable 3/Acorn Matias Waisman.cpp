@@ -9,20 +9,19 @@ int trees;
 int height;
 int fall;
 
-
 int acorn(vector<vector<int>> &mem, vector<vector<int>> &squirrels) {
-    queue<int> mejoreFilas;
+    queue<int> mejoresFilas;
     for(int i = height - 1; i >= 0 && i > height - fall - 1 ; i--) {
         int mejorFilaActual = -1;
         for(int j = 0; j < trees; j++) {
             i == height - 1 ? mem[i][j] = squirrels[j][i] : mem[i][j] = squirrels[j][i] + mem[i+1][j];
             mejorFilaActual = max(mejorFilaActual, mem[i][j]);
         }
-        mejoreFilas.push(mejorFilaActual);
+        mejoresFilas.push(mejorFilaActual);
     }
     for(int i = height - fall - 1; i >= 0; i--) {
-        int mejorBajada = mejoreFilas.front(); 
-        mejoreFilas.pop(); // Saco el elemento de la cola
+        int mejorBajada = mejoresFilas.front(); 
+        mejoresFilas.pop(); // Saco el elemento de la cola
         int mejorFilaActual = -1;
         for(int j = 0; j < trees; j++) {
             int mismoArbol = mem[i + 1][j] + squirrels[j][i];
@@ -30,9 +29,9 @@ int acorn(vector<vector<int>> &mem, vector<vector<int>> &squirrels) {
             mem[i][j] = max(mismoArbol, otroArbol);
             mejorFilaActual = max(mejorFilaActual, mem[i][j]);
         }
-        mejoreFilas.push(mejorFilaActual);
+        mejoresFilas.push(mejorFilaActual);
     }
-    return mejoreFilas.back();
+    return mejoresFilas.back(); // Me quedo con el ultimo que agregue
 }
 
 vector<vector<int>> palabras_a_numeros(vector<string> palabras) {
