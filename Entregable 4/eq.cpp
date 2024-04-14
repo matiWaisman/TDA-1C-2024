@@ -15,35 +15,40 @@ string reverseString(const string& str) {
     return reversed;
 }
 
-bool cumple(pair<int, int> posA, pair<int,int> posB){
-    int longitud = posA.second - posA.first;
+bool cumple(int iA, int fA, int iB, int fB){
+    int longitud = fA - iA;
     if(longitud % 2 != 0){
-        string substrA = a.substr(posA.first, longitud);
-        string substrB = b.substr(posB.first, longitud);
-        return substrA == substrB;
+        for (int i = 0; i < longitud; ++i) {
+            if (a[iA + i] != b[iB + i])
+                return false;
+        }
+        return true;
     }
     if(longitud == 2){
-        string substrA = a.substr(posA.first, longitud);
-        string substrB = b.substr(posB.first, longitud);
+        string substrA = a.substr(iA, longitud);
+        string substrB = b.substr(iB, longitud);
         return substrA == substrB || substrA == reverseString(substrB);
     }
-    int mitad = (posA.first + posA.second) / 2;
-    pair<int, int> a1 = pair(posA.first, posA.first + mitad);
-    pair<int, int> a2 = pair(mitad, posA.second);
-    pair<int, int> b1 = pair(posB.first, posB.first + mitad);
-    pair<int, int> b2 = pair(mitad, posB.second);
-    return ((cumple(a1, b1) && cumple(a2, b2)) || (cumple(a1, b2) && cumple(a2, b1)));
+    int mA = (iA + fA) / 2;
+    int mB = (iB + fB) / 2;
+    return ((cumple(iA, mA, iB, mB) && cumple(mA, fA, mB, fB)) || (cumple(iA, mA, mB, fB) && cumple(mA, fA, iB, mB)));
 }
 
 
 int main(){
     cin >> a >> b;
     int longitud = a.size();
-    bool res = cumple(pair(0, longitud), pair(0, longitud)); // Siempre j es excluyente y i incluye
-    if(res){
-        cout << "YES" << endl;
-    }
-    else{
+    if(a.size() > b.size() || a.size() < b.size()){
         cout << "NO" << endl;
     }
+    else{
+        bool res = cumple(0, longitud, 0, longitud); // Siempre j es excluyente y i incluye
+        if(res){
+            cout << "YES" << endl;
+        }
+        else{
+            cout << "NO" << endl;
+        }
+    }
+   
 }
