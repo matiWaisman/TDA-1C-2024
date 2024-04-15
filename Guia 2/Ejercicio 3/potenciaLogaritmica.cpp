@@ -16,7 +16,7 @@ int calcularPotencia(int a, int b){
 
 int main(){
     int a = 2;
-    int b = 9;
+    int b = 8;
     int res = calcularPotencia(a,b);
     return res;
 }
