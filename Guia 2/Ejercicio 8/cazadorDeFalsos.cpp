@@ -6,7 +6,7 @@ using namespace std;
 
 vector<vector<bool>> m;
 
-pair<int, int> conjuncionSubmatriz(int i0, int i1, int j0, int j1){
+pair<int, int> conjuncionSubmatriz(int i0, int i1, int j0, int j1){ // Como hago para que esto devuelva un false y me sirva con la otra funcion
     for(int i = i0; i < i1; i++){
         for(int j = j0; j < j1; j++){
             if(m[i][j] == false){
