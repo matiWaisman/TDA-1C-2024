@@ -6,22 +6,30 @@ using namespace std;
 
 vector<vector<bool>> m;
 
-pair<int, int> conjuncionSubmatriz(int i0, int i1, int j0, int j1){ // Como hago para que esto devuelva un false y me sirva con la otra funcion
+bool conjuncionSubmatriz(int i0, int i1, int j0, int j1){
     for(int i = i0; i < i1; i++){
         for(int j = j0; j < j1; j++){
             if(m[i][j] == false){
-                return pair(i,j);
+                return false;
             }
         }
     }
-    return pair(-1,-1);
+    return true;
 }
 
 
 pair <int, int> cazadorDeFalsos(int i0, int i1, int j0, int j1){
     int cantidadElementos = (i1 - i0) * (j1 - j0);
-    if(cantidadElementos == 4){ // Tengo una subMatriz de 2*2
-        return conjuncionSubmatriz(i0, i1, j0, j1);
+    if(cantidadElementos == 1){
+        if(conjuncionSubmatriz(i0, i1, j0, j1)){
+            return pair<int,int>(i0,j0);
+        }
+        else{
+            return pair<int, int>(-1,-1);
+        }
+    }
+    if(conjuncionSubmatriz(i0, i1, j0, j1) == true){
+        return pair<int,int>(-1,-1);
     }
     int mitad = (i0 + i1) / 2;
     pair<int, int> c1 = cazadorDeFalsos(i0, mitad, j0, mitad);
@@ -33,11 +41,11 @@ pair <int, int> cazadorDeFalsos(int i0, int i1, int j0, int j1){
 
 int main(){
     m = {
-        {false, true, true, true},
-        {true, true, true, false},
-        {false, false, false, true},
-        {true, false, false, false}
+        {true, true, true, true},
+        {true, true, true, true},
+        {true, true, true, true},
+        {false, true, true, true}
     };
-    pair<int,int> posicionFalso = cazadorDeFalsos(0, 4, 0, 4);
+    pair<int,int> posicionFalso = cazadorDeFalsos(0, m.size(), 0, m.size());
     return 1;
 }
