@@ -3,28 +3,27 @@
 
 using namespace std;
 
-int potencia(int a, int b){
+int calcularPotencia(int a, int b){
     if(b == 1){
         return a;
     }
     int mid = b / 2;
-    int p = potencia(a, mid);
+    int p = calcularPotencia(a, mid);
     if(b % 2 != 0){
         return p * p * a;
     }
     return p * p;
 }
 
-int sumaPotencias(int b, int e){
-    if(e == 1){
-        return b;
+int potenciaSum(int base, int potencia){
+    if(potencia == 1){
+        return base;
     }
-    int mid = e / 2;
-    int sumaAnterior = sumaPotencias(b, mid);
-    return potencia(b, mid) * sumaAnterior + sumaAnterior;
+    
+    return potenciaSum(base, potencia / 2) *  (1 + calcularPotencia(base, potencia/2));
 }
 
 int main(){
-    int res = sumaPotencias(2, 8);
+    int res = potenciaSum(2, 8);
     return res;
 }
