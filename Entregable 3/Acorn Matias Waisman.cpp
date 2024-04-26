@@ -54,6 +54,7 @@ vector<vector<int>> palabras_a_numeros(vector<string> palabras) {
 }
 
 int main() {
+    std::ios_base::sync_with_stdio(false);
     string linea;
     vector<string> palabras;
     int contadorInput = 0;
