@@ -24,10 +24,10 @@ pair<int, int> optiPago(int i, int j, int billetes) {
 }
 
 int main() {
-    conjunto = vector<int>{2, 3, 5, 10, 20, 20};
+    conjunto = vector<int>{1,3,5};
     int filas = conjunto.size();
-    int j = 14;
+    int j = 7;
     matriz = vector<vector<pair<int, int>>>(filas, vector<pair<int, int>>(j, make_pair(1000, 1000)));
-    pair<int,int> res = optiPago(0, j, 0);
+    pair<int,int> res = optiPago(0, j, 0); // Primera posicion es el exceso y la segunda la cantidad de billetes
     return 1;
 }

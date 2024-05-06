@@ -13,22 +13,22 @@ int j;
 
 
 pair<int,int> op(){
-    mem[0][0] = make_pair(0,0);
-    for(int f = 1; f < conjunto.size(); f++){
-        for(int c = j - 1; c > 0; c--){
-            pair<int, int> prev = mem[f-1][max(0,c - conjunto[f])];
-            pair<int,int> actual = make_pair(conjunto[f] + prev.first, prev.second + 1);
-            mem[f][c] = min(actual, mem[f-1][c]);
+    mem[0][0] = pair(0,0);
+    for(int i = 1; i < mem.size(); i++){
+        for(int j = mem[0].size() - 1; j >= 0; j--){
+            pair<int, int> costo = mem[i-1][max(0, j - conjunto[i])];
+            pair<int, int> nuevo_costo = make_pair(conjunto[i] + costo.first, 1 + costo.second);
+            mem[i][j] = min(nuevo_costo, mem[i-1][j]);
         }
     }
-    return mem[conjunto.size()][j];
+    return mem[mem.size() - 1][mem[0].size() - 1];
 }
 
 
 
 int main() {
-    conjunto = {1,2,4};
-    j = 3;
+    conjunto = {1,3,5};
+    j = 7;
     mem = vector<vector<pair<int, int>>>(conjunto.size() + 1, vector<pair<int, int>>(j + 1, make_pair(1000,1000)));
     pair<int,int> res = op();
     return 1;
