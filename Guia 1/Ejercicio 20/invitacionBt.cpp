@@ -5,6 +5,9 @@
 
 using namespace std;
 
+int longitudMaxima;
+
+
 struct hashFunction {
     size_t operator()(const tuple<int, int>& x) const {
         return get<0>(x) ^ get<1>(x);
@@ -82,31 +85,27 @@ unordered_set<int> fs(unordered_set<int> s, unordered_set<int> w){
 }
 */
 
-unordered_set eliminarConflictos(unordered_set<int> s, int elem){
-    for(int e : s){
-        list<int> adyacentes = listaDeAdyacencia[e];
-        for(int ad : adyacentes){
-            if(estanRelacionados)
+unordered_set<int> eliminarConflictos(unordered_set<int> w, int elem){
+    unordered_set<int> res = w;
+    for(int e : w){
+        if(estanRelacionados(e, elem)){
+            res.erase(e);
         }
     }
+    return res;
 }
 
-unordered_set fs(unordered_set<int> s, unordered_set<int> w){
+unordered_set<int> fs(unordered_set<int> s, unordered_set<int> w){
     if(w.size() == 0){
         return s;
     }
     for(int elem : w){
         unordered_set<int> copiaW = w;
         copiaW.erase(elem);
-        unordered_set<int> sConW = {};
-        if(hayConflicto(elem, s)){
-            sConW = eliminarConflictos(s, elem);
-        }
-        else{
-            unordered_set<int> copiaS = s;
-            copiaS.insert(elem);
-            return maximoConjunto(maximoConjunto(fs(copiaS, copiaW), fs(s, copiaW)), sacoConflictos);
-        }
+        unordered_set<int> wSinConflictos = eliminarConflictos(copiaW, elem);
+        unordered_set<int> copiaS = s;
+        copiaS.insert(elem);
+        return maximoConjunto(fs(copiaS, wSinConflictos), fs(s, copiaW));
     }
 }
 
