@@ -15,7 +15,6 @@ struct hashFunction {
 };
 
 unordered_set<tuple<int, int>, hashFunction> e;
-vector<list<int>> listaDeAdyacencia;
 
 void llenar_relaciones(vector<tuple<int,int>> conflictos){
     for(int i = 0; i < conflictos.size(); i++){
@@ -29,14 +28,6 @@ int encontrarMaximo(vector<tuple<int, int>> aristas){
         res = max(res,max(get<0>(aristas[i]), get<1>(aristas[i])));
     }
     return res;
-}
-
-void llenarLista(vector<tuple<int, int>> aristas){
-    listaDeAdyacencia.resize(encontrarMaximo(aristas) + 1);
-    for(int i = 0; i < aristas.size(); i++){
-        listaDeAdyacencia[get<0>(aristas[i])].push_back(get<1>(aristas[i]));
-        listaDeAdyacencia[get<1>(aristas[i])].push_back(get<0>(aristas[i]));
-    }
 }
 
 unordered_set<int> llenar_vertices(vector<int> l){
@@ -96,13 +87,19 @@ unordered_set<int> eliminarConflictos(unordered_set<int> w, int elem){
 }
 
 unordered_set<int> fs(unordered_set<int> s, unordered_set<int> w){
+    if(longitudMaxima < s.size()){
+        longitudMaxima = s.size();
+    }
     if(w.size() == 0){
         return s;
+    }
+    if(s.size() + w.size() < longitudMaxima){ // Poda tontisima
+        return {};
     }
     for(int elem : w){
         unordered_set<int> copiaW = w;
         copiaW.erase(elem);
-        unordered_set<int> wSinConflictos = eliminarConflictos(copiaW, elem);
+        unordered_set<int> wSinConflictos = eliminarConflictos(copiaW, elem); // Poda grande
         unordered_set<int> copiaS = s;
         copiaS.insert(elem);
         return maximoConjunto(fs(copiaS, wSinConflictos), fs(s, copiaW));
@@ -112,10 +109,10 @@ unordered_set<int> fs(unordered_set<int> s, unordered_set<int> w){
 int main(){
     vector<tuple<int,int>> conflictos = {make_tuple(1,2), make_tuple(2,3), make_tuple(3,4), make_tuple(4,5)};
     llenar_relaciones(conflictos);
-    llenarLista(conflictos);
     vector<int> vertices = {1,2,3,4,5};
     unordered_set<int> s;
     unordered_set<int> w = llenar_vertices(vertices);
+    longitudMaxima = 0;
     unordered_set<int> res = fs(s,w);
     return 1;
 }
