@@ -41,8 +41,8 @@ int f(int i, unordered_set<int> mem){
 }
 
 int main(){
-    k = 3;
-    r = {1,2,3,1,4};
+    k = 2;
+    r = {1,2,3,1};
     int minCantidad = f(0, {});
     return minCantidad;
 }
