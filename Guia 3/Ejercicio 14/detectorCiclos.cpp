@@ -59,33 +59,23 @@ vector<int> calcularDout(vector<pair<int, int>> aristas){
 }
 
 vector<unordered_set<int>> eliminarGradoCero(vector<unordered_set<int>> listaDeAdyacencia){
-    vector<unordered_set<int>> res = listaDeAdyacencia;
-    vector<unordered_set<int>> copiaParcial = listaDeAdyacencia;
-    stack<int> s;
-    vector<bool> vistos = vector<bool>(listaDeAdyacencia.size(),false);
-    int prev = -1;
-    for(int i = 1; i < listaDeAdyacencia.size(); i++){
-        if(vistos[i] == false){
-            vistos[i] = true;
-            s.push(i);
-            while(s.size() != 0){
-                int padre = s.top();
-                copiaParcial = res;
-                for(int hijo: copiaParcial[padre]){
-                    if(vistos[hijo] == false){
-                        vistos[hijo] = true;
-                        if(copiaParcial[hijo].size() == 0){
-                            res[padre].erase(hijo);
-                        }
-                        else{
-                            s.push(hijo);
-                        }
-                    } 
-                }
-            }
-        }
-    }
+    
     return res;
+}
+
+vector<bool> visitado;
+
+int cantidadDescendientes(int nodo, vector<unordered_set<int>> listaDeAdyacencia){
+    if(listaDeAdyacencia[nodo].size() == 0){
+        return 0;
+    }
+    else{
+        int res = 0;
+        for(int hijo : listaDeAdyacencia[nodo]){
+            res += cantidadDescendientes(hijo, listaDeAdyacencia);
+        }
+        return res;
+    }
 }
 
 
@@ -94,6 +84,7 @@ int main(){
     vector<pair<int, int>> aristasSinCiclo = {pair(2,4), pair(2,5), pair(1,3), pair(1,2)};
     vector<unordered_set<int>> listaDeAdyacencia = llenarLista(aristasSinCiclo);
     vector<int> gradoSalidaVertices = calcularDout(aristasSinCiclo);
-    vector<unordered_set<int>> listaDeAdyacenciaSinCero = eliminarGradoCero(listaDeAdyacencia);
+    visitado = vector<bool>(listaDeAdyacencia.size(), false);
+    int des = cantidadDescendientes(1, listaDeAdyacencia);
     return 1;
 }
