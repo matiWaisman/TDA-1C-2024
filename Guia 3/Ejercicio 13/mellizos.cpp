@@ -15,6 +15,7 @@ int encontrarMaximo(vector<pair<int, int>> aristas){
     return res;
 }
 
+
 void llenarLista(vector<pair<int, int>> aristas){
     listaDeAdyacencia.resize(encontrarMaximo(aristas) + 1);
     for(int i = 0; i < aristas.size(); i++){
