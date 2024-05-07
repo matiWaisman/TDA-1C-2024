@@ -79,7 +79,7 @@ unordered_set<int> fs(unordered_set<int> s, unordered_set<int> w){
 unordered_set<int> eliminarConflictos(unordered_set<int> w, int elem){
     unordered_set<int> res = w;
     for(int e : w){
-        if(estanRelacionados(e, elem)){
+        if(estanRelacionados(e, elem) || estanRelacionados(elem, e)){
             res.erase(e);
         }
     }
