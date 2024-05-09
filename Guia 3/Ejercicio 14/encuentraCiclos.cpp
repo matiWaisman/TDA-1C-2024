@@ -29,8 +29,26 @@ bool pertenece(unordered_set<int> hashSet, int elemento) {
     return it != hashSet.end();
 }
 
-vector<int> encontrarCiclo(int inicio){
-    unordered_set<int> visitados;
+bool hayCiclo(int nodo, vector<bool> &visitados){
+    if(visitados[nodo]){
+        return true;
+    }
+    visitados[nodo] = true;
+    if(listaDeAdyacencia[nodo].size() == 0){
+        return false;
+    }
+    else{
+        bool res = false;
+        for(auto hijo : listaDeAdyacencia[nodo]){
+            if(hayCiclo(hijo,visitados)){
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+vector<int> encontrarRecorridoConCiclo(int inicio, unordered_set<int>&visitados){
     vector<int> res;
     stack<int> s;
     s.push(inicio);
@@ -54,6 +72,16 @@ vector<int> encontrarCiclo(int inicio){
 int main(){
     vector<pair<int, int>> aristas = {pair(5,6),pair(5,4), pair(2,3), pair(3,5), pair(4,2), pair(1,2), pair(6,4)};
     llenarLista(aristas);
-    vector<int> res = encontrarCiclo(5);
+    unordered_set<int> visitados;
+    vector<bool> loVisite = vector<bool>(encontrarMaximo(aristas) + 1, false);
+    vector<int> recorridoConCiclo;
+    for(int i = 1; i <= encontrarMaximo(aristas); i++){
+        if(!pertenece(visitados, i)){
+            if(hayCiclo(i, loVisite)){
+                recorridoConCiclo = encontrarRecorridoConCiclo(i, visitados);
+                break;
+            }
+        }
+    }
     return 1;
 }
