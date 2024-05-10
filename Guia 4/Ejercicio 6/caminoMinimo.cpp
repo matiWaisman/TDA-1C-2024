@@ -41,7 +41,7 @@ int calcularNodoAMayorDistancia(int v, vector<list<tuple<int,int>>> &listaDeAdya
     distancias[v] = 0;
     q.push(v);
     elementosEnLaCola.insert(v);
-    while(elementosEnLaCola.size() != 0){
+    while(q.size() != 0){
         int padreActual = q.front();
         q.pop();
         elementosEnLaCola.erase(padreActual);
