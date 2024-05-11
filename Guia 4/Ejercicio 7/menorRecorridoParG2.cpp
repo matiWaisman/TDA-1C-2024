@@ -160,9 +160,9 @@ pair<vector<list<pair<int,int>>>,vector<list<pair<int,int>>>> calcularElementosD
 vector<int> reconstruirSolucion(int s, int t, vector<list<pair<int,int>>> distanciasPares, vector<list<pair<int,int>>> distanciasImpares){
     stack<pair<int,int>> stack;
     int iteradorPar = distanciasPares.size();
-    int iPares = distanciasPares.size() - 1;
+    int iPares = 0;
     bool loEncontre = false;
-    while(iPares >= 0 && !loEncontre){
+    while(iPares < distanciasPares.size() && !loEncontre){
         for(auto elem : distanciasPares[iPares]){
             if(elem.first == t){
                 stack.push(elem);
