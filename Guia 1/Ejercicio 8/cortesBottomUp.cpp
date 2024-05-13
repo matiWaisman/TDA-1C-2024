@@ -3,29 +3,27 @@
 
 using namespace std;
 
-vector<bool> vara;
-vector<vector<int>> valorCortes;
-vector<bool> cortes;
+const int inf = 1e5;
 
-void llenarValores(vector<int> posCorte){
-    for(int i = 0; i < valorCortes.size(); i++){
-        for(int j = 0; j < valorCortes.size(); j++){
-            if(posCorte[i] < posCorte[j] + 1){
-                valorCortes[i][j] = posCorte[j] - posCorte[i];
-            }
+vector<vector<int>> mem;
+
+int cortar(vector<int> cortes){
+    for(int i = 0; i < cortes.size(); i++){ // Caso base tonto
+        for(int j = i; j <= i + 1 && j < mem.size(); j++){
+            mem[i][j] = cortes[j] - cortes[i];
         }
     }
-}
-
-int armarSolucion(vector<int> posCorte){
-    int longitud = valorCortes[0][valorCortes.size() - 1];
-    for(int d = 0; d < valorCortes.size(); d++){
-        for(int h = 1; h < valorCortes.size(); h++){
-            int longitudI = posCorte[h] - posCorte[d];
-            int longitudD = longitud - posCorte[h];
-            int costoI = 0;
-            int costoD = 0;
-
+    for(int f = mem.size() - 3; f >= 0; f--){
+        for(int c = f + 2; c < mem.size(); f++){
+            int costo = cortes[c] - cortes[f];
+            int minimo = inf;
+            for(int q = c; q < mem.size(); q++){
+                int posible = costo + mem[f][q] + mem[q][c];
+                if(posible < minimo){
+                    minimo = posible;
+                }
+            }
+            mem[f][c] = minimo;
         }
     }
     return 1;
@@ -33,10 +31,8 @@ int armarSolucion(vector<int> posCorte){
 
 
 int main(){
-    int largo = 10;
-    vector<int> posCorte = {0,2,4,7, 10};
-    valorCortes = vector<vector<int>>(posCorte.size(), vector<int>(posCorte.size(), 0));
-    llenarValores(posCorte);
-    int res = armarSolucion(posCorte);
+    vector<int> cortes = {0,2,4,7,10};
+    mem = vector<vector<int>>(cortes.size(), vector<int>(cortes.size(), inf));
+    int res = cortar(cortes);
     return 1;
 }

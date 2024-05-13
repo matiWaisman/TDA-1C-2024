@@ -2,44 +2,27 @@
 
 using namespace std;
 
-int longitud;
-int minimo = 1000;
-vector<vector<int>> mem;
+const int inf = 1e5;
 
-bool hayCortes(vector<int>&cortes, int i, int j){
-    for(int x = 0; x < cortes.size(); x++){
-        if(cortes[x] > i && cortes[x] < j){
-            return true;
-        }
-    }
-    return false;
-}
+vector<int> cortes;
 
-int cortar(vector<int>&cortes, int i, int j){
-    if(i == j){
+int cortar(int i, int j){
+    if(i + 1 == j){
         return 0;
     }
-    if(hayCortes(cortes, i, j) == false){
-        return 0;
-    }
-    int valorCorte = j - i;
-    int res = valorCorte;
-    for(int c = 0; c < cortes.size(); c++){
-        int corteIzq = cortar(cortes, i, cortes[c]);
-        int corteDerecho = cortar(cortes, i + cortes[c], j);
-        res += corteIzq + corteDerecho;
-        if(i == longitud && j == 0){
-            if(res < minimo){
-                res = minimo;
-            }
+    int costo = cortes[j] - cortes[i];
+    int min = inf;
+    for(int it = i + 1; it < j; it++){
+        int costoActual = costo + cortar(i, it) + cortar(it, j);
+        if(costoActual < min){
+            min = costoActual;
         }
     }
-    return res;
+    return min;
 }
 
 int main(){
-    vector<int> cortes = {2,4,7};
-    longitud = 10;
-    int res = cortar(cortes, 0, longitud);
+    cortes = {0,2,4,7,10};
+    int res = cortar(0, cortes.size() - 1);
     return 1;
 }
