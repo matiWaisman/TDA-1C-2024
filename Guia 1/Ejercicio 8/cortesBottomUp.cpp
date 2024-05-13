@@ -8,25 +8,25 @@ const int inf = 1e5;
 vector<vector<int>> mem;
 
 int cortar(vector<int> cortes){
-    for(int i = 0; i < cortes.size(); i++){ // Caso base tonto
-        for(int j = i; j <= i + 1 && j < mem.size(); j++){
-            mem[i][j] = cortes[j] - cortes[i];
+    for(int i = mem.size() - 1; i >= 0; i--){
+        for(int j = i; j < i + 2 && j < mem.size(); j++){
+            mem[i][j] = 0;
         }
     }
-    for(int f = mem.size() - 3; f >= 0; f--){
-        for(int c = f + 2; c < mem.size(); f++){
-            int costo = cortes[c] - cortes[f];
+    for(int i = mem.size() - 3; i >= 0; i--){
+        for(int j = i + 2; j < mem.size(); j++){
+            int valorCorte = cortes[j] - cortes[i];
             int minimo = inf;
-            for(int q = c; q < mem.size(); q++){
-                int posible = costo + mem[f][q] + mem[q][c];
+            for(int q = i + 1; q < j; q++){
+                int posible = valorCorte + mem[i][q] + mem[q][j];
                 if(posible < minimo){
                     minimo = posible;
                 }
             }
-            mem[f][c] = minimo;
+            mem[i][j] = minimo;
         }
     }
-    return 1;
+    return mem[0][mem.size()-1];
 }
 
 
