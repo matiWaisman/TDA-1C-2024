@@ -28,114 +28,54 @@ vector<list<pair<int,int>>> llenarLista(vector<tuple<int,int,int>> aristasConPes
     return res;
 }
 
-
-/*
-    vector<int> costoMinimo(int salida, int llegada){
-
-    }
-*/
-
 bool pertenece(unordered_set<int> hashSet, int elemento) {
     auto it = hashSet.find(elemento);
     return it != hashSet.end();
 }
 
-vector<int> calcularDistancias(int v, vector<list<pair<int,int>>> &listaDeAdyacenciaConPeso){
+vector<tuple<int,int,int>> calcularDistanciasCostosYPadres(int v, vector<list<pair<int,int>>> &listaDeAdyacenciaConPeso){
     queue<int> q;
-    unordered_set<int> elementosEnLaCola;
     unordered_set<int> elementosVistos;
-    vector<int> distancias = vector<int>(listaDeAdyacenciaConPeso.size(), -1);
-    distancias[v] = 0;
+    vector<tuple<int,int,int>> distanciasPadresYCostos = vector<tuple<int,int,int>>(listaDeAdyacenciaConPeso.size(), tuple(-1,-1, -1)); // Primero distancia, segundo padre, tercero costo arista padre hijo
+    distanciasPadresYCostos[v] = tuple(0,-1, 0);
     q.push(v);
-    elementosEnLaCola.insert(v);
     while(q.size() != 0){
         int padreActual = q.front();
         q.pop();
-        elementosEnLaCola.erase(padreActual);
         elementosVistos.insert(padreActual);
         list<pair<int,int>> vecindarioActual = listaDeAdyacenciaConPeso[padreActual];
         for(auto hijoActual : vecindarioActual){
             int hijo = hijoActual.first;
-            if(!pertenece(elementosEnLaCola, hijo) && !pertenece(elementosVistos, hijo)){
-                q.push(hijo);
-                elementosEnLaCola.insert(hijo);
-                distancias[hijo] = distancias[padreActual] + 1;
-            }
-        }
-    }
-    return distancias;
-}
-
-vector<tuple<int,int,int>> calcularCostoPadreYDistancia(int vertice, vector<list<pair<int,int>>> listaDeAdyacenciaConPeso){
-    vector<tuple<int,int,int>> res = vector<tuple<int,int,int>>(listaDeAdyacenciaConPeso.size(), make_tuple(inf, -1, -1));
-    res[vertice] = make_tuple(0,-1, 0);
-    unordered_set<int> elementosVistos;
-    unordered_set<int> elementosEnLaCola;
-    priority_queue<pair<int, int>, vector<pair<int, int>>, CompareSecond> cola; // Primer elemento vertice, segundo costo de llegar ahi
-    cola.push(make_pair(vertice, 0));
-    elementosEnLaCola.insert(vertice);
-    while(cola.size() != 0){
-        pair<int,int> padreActual = cola.top();
-        cola.pop();
-        int padre = padreActual.first;
-        int costoPadre = padreActual.second;
-        elementosEnLaCola.erase(padre);
-        elementosVistos.insert(padre);
-        list<pair<int,int>> hijos = listaDeAdyacenciaConPeso[padre];
-        for(auto hijo: hijos){
-            int verticeHijo = hijo.first;
-            int costoConexionConHijo = hijo.second;
-            if(!pertenece(elementosVistos, verticeHijo)){
-                int costoPrevio = get<0>(res[verticeHijo]);
-                int nuevoCosto = costoPadre + costoConexionConHijo;
-                if(costoPrevio > nuevoCosto){
-                    res[verticeHijo] = make_tuple(nuevoCosto, padre, get<2>(res[padre]) + 1);
+            int peso = hijoActual.second;
+            int distanciaActual = get<0>(distanciasPadresYCostos[padreActual]) + 1;
+            if(!pertenece(elementosVistos, hijo)){
+                if(get<0>(distanciasPadresYCostos[hijo]) == distanciaActual){ 
+                    if(get<2>(distanciasPadresYCostos[hijo]) > peso){
+                        distanciasPadresYCostos[hijo] = tuple(distanciaActual, padreActual, peso); // No lo agrego a la cola porque ya esta
+                    }
                 }
-                pair<int,int> elementoAAgregar = make_pair(verticeHijo, get<0>(res[verticeHijo]));
-                elementosEnLaCola.insert(verticeHijo);
-                cola.push(elementoAAgregar);
+                else{
+                    distanciasPadresYCostos[hijo] = tuple(distanciaActual, padreActual, peso);
+                    q.push(hijo);
+                }
+                
             }
         }
     }
-    return res;
-}
-
-vector<list<pair<int,int>>> armarArbolMinimo(vector<tuple<int,int,int>> costoPadreYDistancia, vector<int> distanciaMinima){
-    vector<list<pair<int,int>>> res = vector<list<pair<int,int>>>(costoPadreYDistancia.size());
-    for(int i = 1; i < costoPadreYDistancia.size(); i++){
-        tuple<int,int,int> actual = costoPadreYDistancia[i];
-        int costoActual = get<0>(actual);
-        int padreActual = get<1>(actual);
-        int distanciaActual = get<2>(actual);
-        if(distanciaActual == distanciaMinima[i] && padreActual != -1){
-            int costoPadre = get<0>(costoPadreYDistancia[padreActual]);
-            int costoArista = costoActual - costoPadre;
-            res[i].push_back(pair(padreActual, costoArista));
-            res[padreActual].push_back(pair(i, costoArista));
-        }
-    }
-    return res;
+    return distanciasPadresYCostos;
 }
 
 int main(){
     vector<tuple<int,int,int>> aristasConPeso = { // Primeras dos componentes arista, tercera componente costo
-        {1,6,2}, 
-        {1,3,3},
-        {6,3,2},
-        {3,5,1},
-        {5,6,3},
-        {6,2,6},
-        {6,7,5},
-        {3,4,4},
-        {5,2,2},
-        {7,2,2},
-        {4,2,1}
+        {1,2,1},
+        {2,3,3},
+        {2,5,2},
+        {3,4,20},
+        {5,4,1}
     };
     int v = 1;
     int maximo = 7;
     vector<list<pair<int,int>>> listaDeAdyacenciaConPeso = llenarLista(aristasConPeso, maximo);
-    vector<int> distanciaMinima = calcularDistancias(v, listaDeAdyacenciaConPeso);
-    vector<tuple<int,int,int>> costoPadreYDistancia = calcularCostoPadreYDistancia(1, listaDeAdyacenciaConPeso);
-    vector<list<pair<int,int>>> arbolMinimo = armarArbolMinimo(costoPadreYDistancia, distanciaMinima); // Ahora el arbol V-Geodesico es el que menor peso tiene porque elimina los vertices cuyo recorrido de valor minimo requiere una cantidad de pasos mayor
+    vector<tuple<int,int,int>> distanciasCostosYPadres = calcularDistanciasCostosYPadres(v, listaDeAdyacenciaConPeso);
     return 1;
 }
