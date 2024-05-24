@@ -2,83 +2,66 @@
 #include <vector>
 #include <list>
 #include <queue>
-#include <unordered_set>
 #include <stack>
+#include <cmath>
+#include <tuple>
 
 using namespace std;
 
-struct PairHash {
-    size_t operator()(const pair<int, vector<bool>>& p) const {
-        size_t h1 = hash<int>()(p.first);
-        size_t h2 = 0;
-        for (bool b : p.second) {
-            h2 = (h2 << 1) ^ hash<bool>()(b);
-        }
-        return h1 ^ h2;
+int calcularPosicionesMatriz(int cantidadVertices){
+    int res = 0; 
+    for(int i = 0; i < cantidadVertices - 1; i++){
+        res += pow(2,i);
     }
-};
-
-struct PairEqual {
-    bool operator()(const pair<int, vector<bool>>& p1, const pair<int, vector<bool>>& p2) const {
-        return p1.first == p2.first && p1.second == p2.second;
-    }
-};
-
-bool pertenece(const pair<int, vector<bool>>& elem, const unordered_set<pair<int, vector<bool>>, PairHash, PairEqual>& set) {
-    return set.find(elem) != set.end();
+    res += 1;
+    return res;
 }
 
-bool encontreMapa(vector<bool> mapa){
-    if(mapa[mapa.size() - 1] == false){
-        return false;
-    }
-    for(int i = 0; i < mapa.size() - 1; i++){
-        if(mapa[i] == true){
-            return false;
-        }
-    }
-    return true;
+int invertirBit(int numero, int posicion) {
+    return numero ^ (1 << posicion);
+}
+
+bool estaPrendido(int numero, int posicion) {
+    return (numero & (1 << posicion)) != 0;
 }
 
 vector<tuple<int,int, int, bool>> calcularElementosPadresYCambiosDeLuz(int v, vector<list<int>> &listaAdyacenciaAccesos, vector<list<int>> &listaAdyacenciaControles){
     vector<tuple<int, int, int, bool>> elementoPadreYCambioDeLuz;
     bool encontreUnCamino = false;
-    queue<tuple<int, int, vector<bool>, int, bool>> q; // Elemento, posicion del padre en res y mapa
-    unordered_set<pair<int, vector<bool>>, PairHash, PairEqual> elementosVistos;
-    vector<bool> mapaInicial = vector<bool>(listaAdyacenciaAccesos.size(), false);
-    mapaInicial[1] = true;
-    q.push(tuple(v, 0, mapaInicial, -1, false));
+    queue<tuple<int, int, int, int, bool>> q; // Elemento, posicion del padre en res y mapa
+    vector<vector<bool>> visitados = vector<vector<bool>>(listaAdyacenciaAccesos.size(), vector<bool>(calcularPosicionesMatriz(listaAdyacenciaAccesos.size()), false));
+    q.push(make_tuple(v, 0, 1, -1, false));
+    int mapaQueBusco = pow(2, listaAdyacenciaAccesos.size() - 2);
     while(q.size() != 0 && !encontreUnCamino){
         int actual = get<0>(q.front());
         int posPadre = get<1>(q.front());
-        vector<bool> mapaActual = get<2>(q.front());
+        int mapaActual = get<2>(q.front());
         int numeroCambio = get<3>(q.front());
         bool prendi = get<4>(q.front());
-        elementoPadreYCambioDeLuz.push_back(tuple(actual, posPadre, numeroCambio, prendi));
-        elementosVistos.insert(pair(actual, mapaActual));
+        elementoPadreYCambioDeLuz.push_back(make_tuple(actual, posPadre, numeroCambio, prendi));
+        visitados[actual][mapaActual] = true;
         q.pop();
         if(actual == listaAdyacenciaAccesos.size() - 1){
-            if(encontreMapa(mapaActual)){
+            if(mapaActual == mapaQueBusco){
                 encontreUnCamino = true;
             }
         }
         for(auto interruptor: listaAdyacenciaControles[actual]){
             if(interruptor != actual){
-                vector<bool> mapaConModificacion = mapaActual;
-                mapaConModificacion[interruptor] = !mapaActual[interruptor];
+                int mapaModificado = invertirBit(mapaActual, interruptor - 1);
                 bool prendi = true;
-                if(!mapaConModificacion[interruptor]){
+                if(!estaPrendido(mapaModificado, interruptor - 1)){
                     prendi = false;
                 }
-                if(!pertenece(pair(actual, mapaConModificacion), elementosVistos)){
-                    q.push(tuple(actual, elementoPadreYCambioDeLuz.size() - 1, mapaConModificacion, interruptor, prendi));
+                if(!visitados[actual][mapaModificado]){
+                    q.push(make_tuple(actual, elementoPadreYCambioDeLuz.size() - 1, mapaModificado, interruptor, prendi));
                 }
             }
         }
         for(auto habitacion : listaAdyacenciaAccesos[actual]){
-            if(mapaActual[habitacion]){ // No puedo entrar a una habitacion que esta la luz apagada
-                if(!pertenece(pair(habitacion, mapaActual), elementosVistos)){ 
-                    q.push(tuple(habitacion, elementoPadreYCambioDeLuz.size() - 1, mapaActual, -1, false));
+            if(estaPrendido(mapaActual, habitacion - 1)){ // No puedo entrar a una habitacion que esta la luz apagada
+                if(!visitados[habitacion][mapaActual]){ 
+                    q.push(make_tuple(habitacion, elementoPadreYCambioDeLuz.size() - 1, mapaActual, -1, false));
                 }
             }
         }
@@ -115,7 +98,8 @@ void reconstruirSolucion(int i, vector<tuple<int,int, int, bool>> mem, stack<str
 }
 
 int main(){
-    std::ios_base::sync_with_stdio(false);
+    ios_base::sync_with_stdio(false);
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
     int r, d, s;
     cin >> r >> d >> s;
     int villa = 1;
@@ -149,6 +133,7 @@ int main(){
             }
         }
         villa += 1;
+        cout << "\n";
         cin >> r >> d >> s;
     }
 }
