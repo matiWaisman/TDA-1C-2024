@@ -83,39 +83,46 @@ vector<pair<int,int>> mergeSort(int i, int j){
 int main(){
     int n, m;
     cin >> n >> m;
-    vector<list<int>> listaDeAdyacencia = vector<list<int>>(n, list<int>({}));
-    for(int i = 0; i < n; i++){
-        int v1, v2; 
-        cin >> v1 >> v2;
-        listaDeAdyacencia[v1].push_back(v2);
-        listaDeAdyacencia[v2].push_back(v1);
-    }
-    vector<int> estado = vector<int>(n, 0); // 0 es sin ver, 1 es siendo visto y 2 es visto
-    vector<int> extremoSuperiorEn = vector<int>(n, 0);
-    vector<int> extremoInferiorEn = vector<int>(n, 0);
-    vector<list<int>> treeEdges = vector<list<int>>(n, list<int>({}));
-    vector<int> padres = vector<int>(n, -1);
-    for(int i = 0; i < n; i++){
-        if(estado[i] == 0){
-            calcularExtremos(i, -1, listaDeAdyacencia, padres, estado, extremoSuperiorEn, extremoInferiorEn, treeEdges);
-        }
-    }
-    mem = vector<int>(n, -1);
-    for(int i = 0; i < n; i++){
-        int cubrenActual = cubren(i, -1, extremoSuperiorEn, extremoInferiorEn, treeEdges);
-        if(cubrenActual == 0){
-            if(padres[i] != -1){
-                tuplas.emplace_back(pair<int, int>(i,treeEdges[i].size() + 1));
-            }
-            else{
-                tuplas.emplace_back(pair<int, int>(i,treeEdges[i].size()));
+    while(n != 0 && m != 0){
+        vector<list<int>> listaDeAdyacencia = vector<list<int>>(n, list<int>({})); 
+        int v1 = 0;
+        int v2 = 0;
+        while(v1 != -1 && v2 != -1){
+            cin >> v1 >> v2;
+            if(v1 != -1 && v2 != -1){
+                listaDeAdyacencia[v1].push_back(v2);
+                listaDeAdyacencia[v2].push_back(v1);
             }
         }
+        vector<int> estado(n, 0); // 0 es sin ver, 1 es siendo visto y 2 es visto
+        vector<int> extremoSuperiorEn(n, 0);
+        vector<int> extremoInferiorEn(n, 0);
+        vector<list<int>> treeEdges(n, list<int>({}));
+        vector<int> padres(n, -1);
+        for(int i = 0; i < n; i++){
+            if(estado[i] == 0){
+                calcularExtremos(i, -1, listaDeAdyacencia, padres, estado, extremoSuperiorEn, extremoInferiorEn, treeEdges);
+            }
+        }
+        mem = vector<int>(n, -1);
+        for(int i = 0; i < n; i++){
+            int cubrenActual = cubren(i, -1, extremoSuperiorEn, extremoInferiorEn, treeEdges);
+            if(cubrenActual == 0){
+                if(padres[i] != -1){
+                    tuplas.emplace_back(pair<int, int>(i,treeEdges[i].size() + 1));
+                }
+                else{
+                    tuplas.emplace_back(pair<int, int>(i,treeEdges[i].size()));
+                }
+            }
+        }
+        vector<pair<int,int>> res = mergeSort(0, tuplas.size());
+        for(int i = 0; i < m && i < res.size(); i++){
+            pair<int,int> tuplaActual = res[i];
+            cout << tuplaActual.first << " " << tuplaActual.second << endl;
+        } 
+        cout << "\n";
+        cin >> n >> m;
     }
-    vector<pair<int,int>> res = mergeSort(0, tuplas.size());
-    for(int i = 0; i < m; i++){
-        pair<int,int> tuplaActual = tuplas[i];
-        cout << tuplaActual.first << " " << tuplaActual.second << endl;
-    } 
-    tuplas.clear();
+    return 1;
 }
