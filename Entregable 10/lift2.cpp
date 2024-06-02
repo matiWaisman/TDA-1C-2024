@@ -3,6 +3,7 @@
 #include <list>
 #include <queue>
 #include <unordered_set>
+#include <sstream>
 
 using namespace std;
 
@@ -57,21 +58,43 @@ int encontrarMejorCamino(vector<list<pair<int,int>>> listaDeAdyacencia, int n, i
 
 int main(){
     std::ios_base::sync_with_stdio(false);
-    int n,k; // Numero de ascensores y ascensor al que queremos llegar
-    while(cin >> n >> k){
-        vector<int> velocidades;
-        vector<list<pair<int,int>>> listaDeAdyacencia(n * 100); // El primer ascensor representa las posiciones de 0 a 99, el segundo de 100 a 199, y asi sucesivamente
-        for(int i = 0; i < n; i++){ // Leo velocidades
-            int vA;
-            cin >> vA;
-            velocidades.push_back(vA);
+    vector<string> palabras;
+    string linea;
+    while(getline(cin, linea)){
+        if (linea.empty()){
+            break;
         }
-        int p = 0;
-        for(int i = 0; i < n; i++){ // Leo los pisos en los que para
-            int anterior;
-            cin >> anterior;
-            int actual;
-            while(cin >> actual){
+        palabras.push_back(linea);
+    }
+    int p = 0;
+    while(p < palabras.size()){
+        int n, k;
+        string palabraActual = palabras[p]; // Leo n y k
+        vector<string> numeros;
+        istringstream iss(palabraActual);
+        iss >> n >> k;
+        vector<int> velocidades;
+        p = p + 1;
+        palabraActual = palabras[p]; // Leo las velocidades de los ascensores
+        istringstream ss(palabraActual);
+        string palabra;
+        while (ss >> palabra) {
+            velocidades.push_back(stoi(palabra));
+        }
+        vector<list<pair<int,int>>> listaDeAdyacencia(n * 100); // El primer ascensor representa las posiciones de 0 a 99, el segundo de 100 a 199, y asi sucesivamente
+        int i = 0; // Leo los pisos por los que pasa
+        while(i < n){
+            palabraActual = palabras[p + i + 1];
+            istringstream ssp(palabraActual);
+            string palabra;
+            vector<int> pisos;
+            while (ssp >> palabra) {
+                int piso = stoi(palabra);
+                pisos.push_back(piso);
+            }
+            int anterior = pisos[0];
+            for(int j = 1; j < pisos.size(); j++){
+                int actual = pisos[j];
                 int costo = (actual - anterior) * velocidades[i];
                 listaDeAdyacencia[actual + (i * 100)].push_back(pair(anterior + (i * 100), costo));
                 listaDeAdyacencia[anterior + i * 100].push_back(pair(actual + (i * 100), costo));
@@ -82,19 +105,18 @@ int main(){
                     }
                 }
                 anterior = actual;
-                if(cin.peek() == '\n'){
-                    cin.get();
-                    break;
-                }
             }
+            i++;
         }
         int res = encontrarMejorCamino(listaDeAdyacencia, n, k);
         if(res != INF){
-            cout << res << '\n';
+            cout << res;
         }
         else{
-            cout << "IMPOSSIBLE" << '\n';
+            cout << "IMPOSSIBLE";
         }
+        cout << "\n";
+        p = p + 1 + i;
     }
     return 1;
 }
